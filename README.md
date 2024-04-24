@@ -16,6 +16,11 @@ Application uses docker compose technology to run all components. To run applica
 ```bash 
 docker-compose up -d
 ```
+* You can access the API using Swagger UI by going to:
+
+```bash 
+http://localhost/#/default
+```
 
 ## Tech stack
 
