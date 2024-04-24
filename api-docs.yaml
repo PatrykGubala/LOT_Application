@@ -1,0 +1,258 @@
+openapi: 3.0.3
+info:
+  title: LOT Application API
+  description: This API allows to manage flights and passengers.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/
+    description: Development server
+paths:
+  /flights:
+    get:
+      summary: List all flights
+      operationId: listFlights
+      responses:
+        '200':
+          description: A list of all flights
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Flight'
+    post:
+      summary: Create a new flight
+      operationId: createFlight
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Flight'
+      responses:
+        '201':
+          description: Flight created successfully
+
+  /flights/{flightNumber}:
+    get:
+      summary: Get a specific flight
+      operationId: getFlight
+      parameters:
+        - name: flightNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detailed information about a flight
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Flight'
+        '404':
+          description: Flight not found
+    put:
+      summary: Update a flight
+      operationId: updateFlight
+      parameters:
+        - name: flightNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Flight'
+      responses:
+        '200':
+          description: Flight updated successfully
+    delete:
+      summary: Delete a flight
+      operationId: deleteFlight
+      parameters:
+        - name: flightNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Flight deleted successfully
+
+  /flights/{flightNumber}/seats/{seatNumber}:
+    put:
+      summary: Assign a passenger to a seat
+      operationId: assignPassengerToSeat
+      parameters:
+        - name: flightNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Unique identifier of the flight
+        - name: seatNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Seat number to assign the passenger to
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                passengerId:
+                  type: integer
+                  description: ID of the passenger to be assigned to the seat
+      responses:
+        '200':
+          description: Passenger assigned to seat successfully
+        '400':
+          description: Invalid input, such as invalid JSON data
+        '404':
+          description: Flight or passenger not found
+        '409':
+          description: Seat already assigned or invalid passenger ID
+
+    delete:
+      summary: Unassign a passenger from a seat
+      operationId: unassignPassengerFromSeat
+      parameters:
+        - name: flightNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Unique identifier of the flight
+        - name: seatNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Seat number to unassign the passenger from
+      responses:
+        '200':
+          description: Passenger unassigned from seat successfully
+        '404':
+          description: Seat not found or not assigned
+
+  /passengers:
+    get:
+      summary: List all passengers
+      operationId: listPassengers
+      responses:
+        '200':
+          description: A list of all passengers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Passenger'
+    post:
+      summary: Add a new passenger
+      operationId: addPassenger
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Passenger'
+      responses:
+        '201':
+          description: Passenger added successfully
+
+  /passengers/{id}:
+    get:
+      summary: Retrieve a passenger by ID
+      operationId: getPassenger
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Passenger details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Passenger'
+        '404':
+          description: Passenger not found
+    put:
+      summary: Update a passenger's details
+      operationId: updatePassenger
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Passenger'
+      responses:
+        '200':
+          description: Passenger details updated successfully
+    delete:
+      summary: Delete a passenger
+      operationId: deletePassenger
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Passenger deleted successfully
+
+components:
+  schemas:
+    Flight:
+      type: object
+      properties:
+        flightNumber:
+          type: integer
+        route:
+          type: string
+        departureDate:
+          type: string
+          format: date
+        departureTime:
+          type: string
+          pattern: '00:00:00$'
+        availableSeats:
+          type: integer
+      required:
+        - route
+        - departureDate
+        - departureTime
+        - availableSeats
+
+    Passenger:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+      required:
+        - firstName
+        - lastName
+        - phoneNumber

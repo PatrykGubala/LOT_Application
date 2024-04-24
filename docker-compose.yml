@@ -32,3 +32,15 @@ services:
       - DATABASE_PASS=pass
       - JAVA_OPTS=-Xmx300m -Xms300m
     restart: always
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: lot_swagger
+    ports:
+      - "80:8080"
+    environment:
+      SWAGGER_JSON: /docs/api-docs.yaml
+    volumes:
+      - "./api-docs.yaml:/docs/api-docs.yaml"
+    restart: always
+
