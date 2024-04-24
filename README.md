@@ -19,10 +19,11 @@ docker-compose up -d
 
 ## Tech stack
 
-* Java 1.8,
-* jUnit,
-* H2 Database,
-* MySQL,
+* Java 1.8
+* jUnit
+* H2 Database
+* MySQL
 * Docker
-
-
+* Maven
+* Jackson
+* Swagger and OpenAPI
